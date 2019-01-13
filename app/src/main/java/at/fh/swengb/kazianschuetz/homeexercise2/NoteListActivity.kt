@@ -32,8 +32,15 @@ class NoteListActivity : AppCompatActivity() {
         rv_notes.layoutManager = LinearLayoutManager(this)
 
 
+        //myAdapter.updateData(myDb.noteDao.findAllNotes())
+    }
+
+    override fun onResume() {
+        super.onResume()
         myAdapter.updateData(myDb.noteDao.findAllNotes())
     }
+
+
 
     fun addNote(v:View) {
         val intent = Intent(this, AddNoteActivity::class.java)
