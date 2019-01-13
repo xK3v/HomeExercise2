@@ -17,10 +17,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         sharedPreferences = getSharedPreferences(packageName, Context.MODE_PRIVATE)
+
+
+        //only ask for name and age if they are not saved already
+        if (sharedPreferences.contains("NAME")) {
+            openNotes()
+        }
     }
 
     fun saveSharedPreferences(v:View) {
-
         sharedPreferences.edit().putString("NAME", txt_title.text.toString()).apply()
         sharedPreferences.edit().putInt("AGE",txt_content.text.toString().toInt()).apply()
         openNotes()
