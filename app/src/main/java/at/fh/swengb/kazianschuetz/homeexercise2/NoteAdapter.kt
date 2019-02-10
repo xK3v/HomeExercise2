@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.note_item.view.*
 
-class NoteAdapter : RecyclerView.Adapter<NoteViewHolder>() {
+class NoteAdapter(val clickListener: (note: Note) -> Unit, val longClickListener: (note: Note) -> Unit): RecyclerView.Adapter<NoteViewHolder>() {
 
     private var dataList = mutableListOf<Note>()
 
@@ -18,7 +18,7 @@ class NoteAdapter : RecyclerView.Adapter<NoteViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val itemView = inflater.inflate(R.layout.note_item, parent, false)
-        return NoteViewHolder(itemView)
+        return NoteViewHolder(itemView, clickListener, longClickListener)
     }
 
     override fun getItemCount(): Int {
@@ -32,10 +32,17 @@ class NoteAdapter : RecyclerView.Adapter<NoteViewHolder>() {
 }
 
 
-class NoteViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
+class NoteViewHolder(itemView:View, val clickListener: (note: Note) -> Unit, val longClickListener: (note: Note) -> Unit) : RecyclerView.ViewHolder(itemView) {
     fun bindNote(note:Note) {
         itemView.lb_title.text = note.title
         itemView.lb_content.text = note.content
+        itemView.setOnClickListener {
+            clickListener(note)
+        }
+        itemView.setOnLongClickListener {
+            longClickListener(note)
+            true
+        }
     }
 
 }

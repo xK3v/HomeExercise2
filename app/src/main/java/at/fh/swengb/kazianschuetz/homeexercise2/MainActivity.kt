@@ -11,7 +11,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var db: NoteDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,9 +20,11 @@ class MainActivity : AppCompatActivity() {
 
         sharedPreferences = getSharedPreferences(packageName, Context.MODE_PRIVATE)
 
+        db = NoteDatabase.getDatabase(applicationContext)
+
 
         //only ask for name and age if they are not saved already
-        if (sharedPreferences.contains("NAME")) {
+        if (sharedPreferences.contains("USERNAME")) {
             openNotes()
         }
     }
@@ -32,13 +35,22 @@ class MainActivity : AppCompatActivity() {
 
         if (nameInput.isBlank() or ageInput.isBlank()) {
             Toast.makeText(this, "Please enter valid values!", Toast.LENGTH_LONG).show()
-            finish()
-            startActivity(intent)
+            //finish()
+            //startActivity(intent)
         } else {
-            sharedPreferences.edit().putString("NAME", nameInput).apply()
-            sharedPreferences.edit().putInt("AGE", ageInput.toInt()).apply()
-            openNotes()
+            val user = db.userDao.findByName(nameInput)
+
+            if (user == null) {
+                sharedPreferences.edit().putString("USERNAME", nameInput).apply()
+                db.userDao.insert(User(nameInput,ageInput.toInt()))
+                openNotes()
+            }
+            else {
+                sharedPreferences.edit().putString("USERNAME", nameInput).apply()
+                openNotes()
+            }
         }
+
     }
 
     private fun openNotes() {
