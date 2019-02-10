@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         db = NoteDatabase.getDatabase(applicationContext)
 
 
-        //only ask for name and age if they are not saved already
+        //only ask for login if no user is logged in
         if (sharedPreferences.contains("USERNAME")) {
             openNotes()
         }
@@ -33,20 +33,19 @@ class MainActivity : AppCompatActivity() {
         val nameInput: String = txt_title.text.toString()
         val ageInput: String = txt_content.text.toString()
 
+        //if input is invalid, just show a Toast Message
         if (nameInput.isBlank() or ageInput.isBlank()) {
             Toast.makeText(this, "Please enter valid values!", Toast.LENGTH_LONG).show()
-            //finish()
-            //startActivity(intent)
         } else {
             val user = db.userDao.findByName(nameInput)
+            sharedPreferences.edit().putString("USERNAME", nameInput).apply()
 
+            //check if user exists already
             if (user == null) {
-                sharedPreferences.edit().putString("USERNAME", nameInput).apply()
                 db.userDao.insert(User(nameInput,ageInput.toInt()))
                 openNotes()
             }
             else {
-                sharedPreferences.edit().putString("USERNAME", nameInput).apply()
                 openNotes()
             }
         }

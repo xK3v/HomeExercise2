@@ -20,6 +20,7 @@ class AddNoteActivity : AppCompatActivity() {
 
         myDb = NoteDatabase.getDatabase(applicationContext)
 
+        //check if note is being added or edited, and fill existing data if possible
         if (intent.hasExtra(Note.EXTRA_NOTE_ID)) {
             val noteId = intent.getLongExtra(Note.EXTRA_NOTE_ID, 0)
             val note = myDb.noteDao.findNoteById(noteId)
@@ -38,7 +39,7 @@ class AddNoteActivity : AppCompatActivity() {
 
         val newNote = Note(txt_title.text.toString(), txt_content.text.toString(), username?:"anonymous")
 
-
+        //either update or insert
         if (intent.hasExtra(Note.EXTRA_NOTE_ID)) {
             val noteId = intent.getLongExtra(Note.EXTRA_NOTE_ID, 0)
             myDb.noteDao.update2(newNote.title, newNote.content, noteId)
@@ -48,6 +49,7 @@ class AddNoteActivity : AppCompatActivity() {
 
         finish()
     }
+
 
     fun shareNote (v:View) {
         val intent = Intent(Intent.ACTION_SEND)

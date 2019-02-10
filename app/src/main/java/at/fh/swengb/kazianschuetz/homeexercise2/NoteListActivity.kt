@@ -58,16 +58,13 @@ class NoteListActivity : AppCompatActivity() {
         rv_notes.layoutManager = LinearLayoutManager(this)
 
 
-        //myAdapter.updateData(myDb.noteDao.findAllNotes())
     }
 
     override fun onResume() {
         super.onResume()
 
         val username = sharedPreferences.getString("USERNAME", "-")
-
         val notesAndUsers = myDb.userDao.findUsersAndNotesByName(username?:"anonymous")
-
         val list = notesAndUsers.notes
 
         myAdapter.updateData(list)
